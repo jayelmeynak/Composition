@@ -14,9 +14,7 @@ import com.example.composition.domain.entity.Level
 
 class GameFragment : Fragment() {
 
-    private var _level: Level? = null
-    private val level: Level
-        get() = _level ?: throw RuntimeException("level in GameFragment = null")
+    private lateinit var level: Level
 
     private var _binding: FragmentGameBinding? = null
     private val binding: FragmentGameBinding
@@ -39,21 +37,25 @@ class GameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.tvSum.setOnClickListener {
-            launchGameFinishedFragment(GameResult(false, 15, 30
-                , GameSettings(20, 5,5,60)))
+            launchGameFinishedFragment(
+                GameResult(
+                    false, 15, 30, GameSettings(20, 5, 5, 60)
+                )
+            )
         }
     }
 
     private fun parseArgs() {
         arguments?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                _level = it.getParcelable(KEY_LEVEL, Level::class.java)
+                it.getParcelable(KEY_LEVEL, Level::class.java)?.let {
+                    level = it
+                }
             }
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                _level = it.getParcelable(KEY_LEVEL)
-            }
-            if (level == null) {
-                throw RuntimeException("level = null")
+                it.getParcelable<Level>(KEY_LEVEL)?.let {
+                    level = it
+                }
             }
         }
     }

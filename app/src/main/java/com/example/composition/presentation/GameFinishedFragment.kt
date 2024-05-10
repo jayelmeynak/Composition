@@ -14,11 +14,7 @@ import com.example.composition.domain.entity.GameResult
 
 class GameFinishedFragment : Fragment() {
 
-    private var _gameResult: GameResult? = null
-    private val gameResult: GameResult
-        get() = _gameResult ?: throw RuntimeException("GameResult in GameFinishedFragment = null")
-
-
+    private lateinit var gameResult: GameResult
     private var _binding: FragmentGameFinishedBinding? = null
     private val binding: FragmentGameFinishedBinding
         get() = _binding ?: throw RuntimeException("FragmentGameFinishedBinding = null")
@@ -63,13 +59,14 @@ class GameFinishedFragment : Fragment() {
     private fun parseArgs() {
         arguments?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                _gameResult = it.getParcelable(KEY_GAME_RESULT, GameResult::class.java)
+                it.getParcelable(KEY_GAME_RESULT, GameResult::class.java)?.let {
+                    gameResult = it
+                }
             }
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                _gameResult = it.getParcelable(KEY_GAME_RESULT)
-            }
-            if (gameResult == null) {
-                throw RuntimeException("level = null")
+                it.getParcelable<GameResult>(KEY_GAME_RESULT)?.let {
+                    gameResult = it
+                }
             }
         }
     }

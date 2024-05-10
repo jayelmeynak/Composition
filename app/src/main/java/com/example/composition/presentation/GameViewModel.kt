@@ -94,6 +94,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             countOfRightAnswers++
         }
         countOfQuestion++
+        updateProgress()
         generateQuestion()
     }
 

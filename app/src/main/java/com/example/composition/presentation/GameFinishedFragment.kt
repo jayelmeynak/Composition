@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 import com.example.composition.domain.entity.GameResult
 
@@ -47,6 +48,38 @@ class GameFinishedFragment : Fragment() {
         binding.buttonRetry.setOnClickListener {
             retryGame()
         }
+        bindViews()
+
+    }
+
+    private fun bindViews() = with(binding) {
+        if (gameResult.winner) {
+            emojiResult.setImageResource(R.drawable.ic_smile)
+        } else {
+            emojiResult.setImageResource(R.drawable.ic_sad)
+        }
+        tvRequiredAnswers.text = String.format(
+            getString(R.string.required_score),
+            gameResult.gameSettings.minCountOfRightAnswers.toString()
+        )
+        tvRequiredPercentage.text = String.format(
+            getString(R.string.required_percentage),
+            gameResult.gameSettings.minPercentOfRightAnswers.toString()
+        )
+        tvScoreAnswers.text = String.format(
+            getString(R.string.score_answers),
+            gameResult.countOfRightAnswers.toString()
+        )
+        val percent = if (gameResult.countOfQuestions == 0) {
+            0
+        } else {
+            ((gameResult.countOfRightAnswers / gameResult.countOfQuestions.toDouble()) * 100).toInt()
+        }
+        tvScorePercentage.text = String.format(
+            getString(R.string.score_percentage),
+            percent.toString()
+        )
+
     }
 
     private fun retryGame() {
